@@ -101,3 +101,4 @@ ggplot(df, aes(RapidCharge, PriceEuro))+geom_boxplot()+labs(title = "Difference 
 A5: EVs that cost less than 50000 euro has low chance of equip with Rapid charge function, therefore, it means price and rapid charge function has a positive correlation.
 
 That's the end of all questions. Thanks you for reading my project in R.
+https://4e8ad3148c4044208b41ee9fd4b8e3d3.app.posit.cloud/?view=rmarkdown
