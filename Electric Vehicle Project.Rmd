@@ -1,0 +1,103 @@
+---
+title: "Electric Vehicle Project"
+author: "Clement Cheng"
+date: "2022-12-08"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+This is a project related to Electric Vehicle. In this project, I am using the "ElectricCarData_Clean.csv" to solve 5 questions by the author for practicing my skills in R.
+
+Data Source: Kaggle "EVs - One Electric Vehicle Dataset - Smaller" by GEOFF839
+
+Last updated: 12/8/2022
+
+
+Let's install and load packages!
+
+```{r}
+install.packages("tidyverse") 
+install.packages("sqldf")
+install.packages("ggplot2")
+
+library("tidyverse") # Basic package for data analysis
+library("sqldf") # Find one off answers
+library("ggplot2") # For visualization
+```
+
+Set the data frame and preview the file
+
+```{r}
+df <- read.csv("/cloud/project/ElectricCarData_Clean.csv")
+head(df)
+```
+
+Let's see if the data frame has missing value or duplicates
+
+```{r}
+is.na(df)
+
+duplicated(df)
+```
+
+It seems the data is clean for processing
+
+Start the Analysis! Solving Q1: Which car has the fastest 0-100 acceleration? My thoughts: Sort the data by [AccelSec]
+
+```{r}
+sort(df$AccelSec) # Using sort the find the lowest Accel Sec
+sqldf("SELECT Brand, Model, AccelSec FROM df WHERE AccelSec = 2.1") # Using sqldf to find the details of electric vehicle has AccelSec as 2.1
+```
+
+A1: Tesla's Roadster has the fastest 0-100 acceleration as 2.1.
+
+Solving Q2: Which has the highest efficiency? My thoughts: Sort the data by [Efficiency_WhKm]
+
+```{r}
+sort(df$Efficiency_WhKm, decreasing = TRUE)
+sqldf("SELECT Brand, Model, Efficiency_WhKm From df WHERE Efficiency_WhKm = 273")# Using sqldf to find the details of electric vehicle has Efficiency_WhKm as 273
+```
+
+A2: Mercedes's EQV 300 Long has the highest efficiency as 273 WhKm.
+
+Solving Q3: Does a difference in power train effect the range, top speed, efficiency? My thoughts: Using ggplot to show the distribution between power train and range, power train and speed, and power train and efficiency.
+
+```{r}
+ggplot(df, aes(PowerTrain, Range_Km))+geom_boxplot()+labs(title = "Difference Between Different PowerTrain and Range", x="PowerTrain Type", y="Range_Km") # plots for showing the difference between power train and range
+```
+
+EV's with AWD PowerTrain are the best performer in Range, then FWD, last RWD. It was determined by the minimum range Km the electric vehicle can drove.
+
+```{r}
+ggplot(df, aes(PowerTrain, TopSpeed_KmH))+geom_boxplot()+labs(title = "Difference Between Different PowerTrain and TopSpeed_KmH", x="PowerTrain Type", y="TopSpeed_KmH") # plots for showing the difference between power train and top speed
+```
+
+EV's with AWD PowerTrain are the best performer in Top Speed, then RWD, last FWD. It was determined by the minimum top speed Km per hour.
+
+```{r}
+ggplot(df, aes(PowerTrain, Efficiency_WhKm))+geom_boxplot()+labs(title = "Difference Between Different PowerTrain and Efficiency_WhKm", x="PowerTrain Type", y="Efficiency_WhKm") # plots for showing the difference between power train and efficiency 
+```
+
+EV's with AWD PowerTrain are the best performer in Efficiency, then RWD, last FWD. It was determined by the average efficiency_WhKm.
+
+A3: Overall, EV's with AWD PowerTrain will have better performance in range, speed, and efficiency.
+
+Solving Q4: Which Manufacturer has the most number of vehicles? My thoughts: Using sqldf for counting vehicles in each brand
+
+```{r}
+sqldf("SELECT DISTINCT Brand, COUNT(Brand) as num_vehicels FROM df GROUP BY Brand")
+```
+
+A4: Tesla has the most number of vehicles.
+
+Solving Q5: How does price related to rapid charging My thoughts: Using ggplot to show the distribution between price and rapid charging
+
+```{r}
+ggplot(df, aes(RapidCharge, PriceEuro))+geom_boxplot()+labs(title = "Difference Between Different PowerTrain and Price", x="Rapid Charge", y="Price in Euro") # plots for showing the difference between power train and efficiency 
+```
+
+A5: EVs that cost less than 50000 euro has low chance of equip with Rapid charge function, therefore, it means price and rapid charge function has a positive correlation.
+
+That's the end of all questions. Thanks you for reading my project in R.
